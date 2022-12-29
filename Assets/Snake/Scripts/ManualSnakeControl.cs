@@ -2,25 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(CharacterController))]
 public class ManualSnakeControl : SnakeControl
 {
     [SerializeField] float Speed = 100;
     [SerializeField] float TurnSpeed = 180;
 
-    Rigidbody rigidBody;
+    CharacterController characterController;
+    PlayerTouchMovement touchMovement;
 
     void Start()
     {
-        rigidBody = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
+        touchMovement = GetComponent<PlayerTouchMovement>();        
     }
     
     void Rotate()
     {
         // rotate by input controller
-        if (Input.GetAxis("Horizontal") != 0)
+        if (Input.GetAxis("Horizontal1") != 0)
         {            
-            var dx = Input.GetAxis("Horizontal");
+            var dx = Input.GetAxis("Horizontal1");
             if(dx > 1) dx = 1;
             else if(dx < -1) dx = -1;
             var rotation = dx * TurnSpeed;
@@ -29,7 +31,6 @@ public class ManualSnakeControl : SnakeControl
         }
 
         // rotate by virtual touch
-        var touchMovement = GetComponent<PlayerTouchMovement>();        
         if (touchMovement != null) 
         {
             Vector3 target = new Vector3(-touchMovement.MovementAmount.y, 0.0f, touchMovement.MovementAmount.x);
@@ -44,6 +45,6 @@ public class ManualSnakeControl : SnakeControl
     public override void Move()
     {
         Rotate();
-        rigidBody.velocity = transform.right * Speed * Time.deltaTime;
+        characterController.SimpleMove(transform.right * Speed * Time.deltaTime);
     }
 }
