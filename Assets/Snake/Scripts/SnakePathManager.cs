@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 /// Keep track of the path of a single snake part.
 public class SnakePathManager : MonoBehaviour
@@ -51,7 +52,7 @@ public class SnakePathManager : MonoBehaviour
     }
 
     /// Clamp the path to have at most the given length and return the first (closes to head) removed marker. If path is shorter, null is returned.
-    public Marker TakeTailAt(float maxLength)
+    public Marker TrimAtLength(float maxLength)
     {
         if (markers.Count < 1)
             return null;
@@ -69,8 +70,26 @@ public class SnakePathManager : MonoBehaviour
         if (i > 0)
         {
             // remove unwanted section
-            var marker = markers[i];
+            var marker = markers[i-1];
             markers.RemoveRange(0, i);
+            return marker;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    /// Clamp the path to have at most the given number of markers and return the first (closes to head) removed marker. If path is shorter, null is returned.
+    public Marker TrimAtCount(int count)
+    {
+        Assert.IsTrue(count > 0);
+        var countToRemove = markers.Count - count;
+        if (countToRemove > 0)
+        {
+            // remove unwanted section
+            var marker = markers[countToRemove-1];
+            markers.RemoveRange(0, countToRemove);
             return marker;
         }
         else

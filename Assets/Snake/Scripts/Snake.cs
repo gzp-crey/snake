@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 public class Snake : MonoBehaviour
 {
     [Header("Common Settings")]    
-    [SerializeField] float PartSize = 0.2f;    
+    [SerializeField] int PartSize = 200;    
     [SerializeField] bool ShowDebug = true;
 
     [Header("Body Templates")]
@@ -60,8 +60,8 @@ public class Snake : MonoBehaviour
         Assert.IsTrue(bodyParts.Count > 0 && bodyParts[0] == gameObject);
 
         var tail = bodyParts[bodyParts.Count - 1];
-        var tailPath = tail.GetComponent<SnakePathManager>();
-        var tailMarker = tailPath.TakeTailAt(PartSize);
+        var tailPath = tail.GetComponent<SnakePathManager>();        
+        var tailMarker = tailPath.TrimAtCount(PartSize);
 
         var partCount = BodyCount + 1;
         if (bodyParts.Count < partCount && tailMarker != null)
@@ -101,6 +101,14 @@ public class Snake : MonoBehaviour
                 Debug.LogError("Path is empty, could not update part position");
             }
         }
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit) {
+        Consumable consumable = hit.collider.GetComponent<Consumable>();
+        if (consumable == null)
+            return;
+        
+        Debug.LogError("Eating");
     }
 
     void OnGUI()

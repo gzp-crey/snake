@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(CharacterController))]
 public class ManualSnakeControl : SnakeControl
 {
     [SerializeField] float Speed = 100;
     [SerializeField] float TurnSpeed = 180;
 
-    Rigidbody rigidBody;
+    CharacterController characterController;
 
     void Start()
     {
-        rigidBody = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
     }
     
     void Rotate()
@@ -44,6 +44,6 @@ public class ManualSnakeControl : SnakeControl
     public override void Move()
     {
         Rotate();
-        rigidBody.velocity = transform.right * Speed * Time.deltaTime;
+        characterController.SimpleMove(transform.right * Speed * Time.deltaTime);
     }
 }
