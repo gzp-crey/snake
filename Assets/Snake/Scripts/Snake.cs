@@ -103,12 +103,14 @@ public class Snake : MonoBehaviour
         }
     }
 
-    void OnControllerColliderHit(ControllerColliderHit hit) {
-        Consumable consumable = hit.collider.GetComponent<Consumable>();
-        if (consumable == null)
-            return;
-        
-        Debug.LogError("Eating");
+    //Upon collision with another GameObject, this GameObject will reverse direction
+    void OnTriggerEnter(Collider other)
+    {
+        var consumable = other.gameObject.GetComponent<Consumable>();
+        if(consumable != null) {
+            BodyCount += 1;
+            consumable.Consume();
+        }
     }
 
     void OnGUI()
