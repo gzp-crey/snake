@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawner: {fileID: 0}
+  pivotY: -0.5
 --- !u!65 &7508535592170044896
 BoxCollider:
   m_ObjectHideFlags: 0

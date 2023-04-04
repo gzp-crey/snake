@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-
 public class Snake : MonoBehaviour
 {
     [Header("Common Settings")]    
@@ -118,15 +117,6 @@ public class Snake : MonoBehaviour
         if(!ShowDebug)
             return;
 
-        const float H = 30;
-        float y = 35;
-
-        GUIStyle labelStyle = new GUIStyle() 
-        {
-            fontSize = 24,
-            normal = new GUIStyleState() { textColor = Color.white }
-        };
-
-        GUI.Label(new Rect(10, y += H, 500, 20), $"Snake length: {bodyParts.Count-1}/{BodyCount}", labelStyle);        
+        DebugHUD.AddLine( $"Snake length: {bodyParts.Count-1}/{BodyCount}");        
     }
 }
