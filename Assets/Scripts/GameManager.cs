@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public bool ShowDebugHUD = true;
 
-    void LateUpdate()
+    void Update()
     {
         DebugHUD.StartFrame(ShowDebugHUD);
     }
