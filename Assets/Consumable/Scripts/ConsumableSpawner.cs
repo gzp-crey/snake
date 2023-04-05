@@ -7,7 +7,7 @@ public class ConsumableSpawner : MonoBehaviour
     [SerializeField] Vector3 spawnAreaSize = Vector3.one * 3f;
     [SerializeField] Consumable template;
 
-    [Range(0, 10)]
+    [Range(0, 30)]
     [SerializeField] int MaxCount;
     [SerializeField] bool ShowDebug = true;
 
