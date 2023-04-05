@@ -105,10 +105,10 @@ public class Snake : MonoBehaviour
     //Upon collision with another GameObject, this GameObject will reverse direction
     void OnTriggerEnter(Collider other)
     {
-        var consumable = other.gameObject.GetComponent<Consumable>();
+        var consumable = other.gameObject.GetComponent<IPickUpHandle>();
         if(consumable != null) {
             BodyCount += 1;
-            consumable.Consume();
+            consumable.OnConsume();
         }
     }
 

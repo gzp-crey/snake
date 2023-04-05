@@ -1,0 +1,18 @@
+{
+  "name": "com.gzp.virtual_joystick",
+  "displayName": "Virtual Joystick",
+  "version": "0.1.0",
+  "unity": "2021.3",
+  "unityRelease": "14f1",
+  "description": "This package implements a virtual joystick for touch screen",
+  "keywords": [],
+  "category": "Editor",
+  "relatedPackages": {},
+  "_upm": {
+    "changelog": ""
+  },
+  "upmCi": {
+    "footprint": "24746aefd79ef45d3127cc58364c86d7e9adf769"
+  },
+  "documentationUrl": ""
+}

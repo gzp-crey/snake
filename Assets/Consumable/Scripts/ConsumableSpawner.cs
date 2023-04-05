@@ -50,7 +50,7 @@ public class ConsumableSpawner : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(consumable.transform.position, Vector3.down, out hit, spawnAreaSize.y * 2))
             {
-                consumable.transform.position = hit.point + Vector3.down * consumable.pivotY;
+                consumable.transform.position = hit.point;
                 return true;
             }
             retryCount -= 1;
