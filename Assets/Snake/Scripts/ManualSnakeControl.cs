@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -7,8 +5,10 @@ public class ManualSnakeControl : SnakeControl
 {
     [SerializeField] float Speed = 100;
     [SerializeField] float TurnSpeed = 180;
+    [SerializeField] FloatingJoystick Joystick;
 
     CharacterController characterController;
+    
 
     void Start()
     {
@@ -29,10 +29,9 @@ public class ManualSnakeControl : SnakeControl
         }
 
         // rotate by virtual touch
-        var touchMovement = GetComponent<PlayerTouchMovement>();        
-        if (touchMovement != null) 
+        if (Joystick != null) 
         {
-            Vector3 target = new Vector3(-touchMovement.MovementAmount.y, 0.0f, touchMovement.MovementAmount.x);
+            Vector3 target = new Vector3(-Joystick.MovementAmount.y, 0.0f, Joystick.MovementAmount.x);
             if(target.magnitude == 0) 
                 return;
             var rotation = Quaternion.LookRotation(target);
