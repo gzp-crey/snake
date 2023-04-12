@@ -1,19 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class Snake : MonoBehaviour
+public class Snake : NetworkBehaviour
 {
     [Header("Common Settings")]    
     [SerializeField] int PartSize = 200;    
     [SerializeField] bool ShowDebug = true;
 
     [Header("Body Templates")]
-    [SerializeField] GameObject SnakeHeadTemplate;
     [SerializeField] List<GameObject> BodyTemplates;
 
-    public uint BodyCount = 5;
+    public NetworkVariable<uint> BodyCount = new NetworkVariable<uint>(5);
     // body segments including the head (this)
     List<GameObject> bodyParts = new List<GameObject>();    
 
@@ -24,19 +24,6 @@ public class Snake : MonoBehaviour
         bodyParts.Add(gameObject);
     }
     
-    void Update()
-    {
-        // KeyDown is not working in FixedUpdate !
-        if (Input.GetKeyDown(KeyCode.KeypadPlus))
-        {
-            BodyCount += 1;
-        }
-        if (Input.GetKeyDown(KeyCode.KeypadMinus) && BodyCount > 0)
-        {
-            BodyCount -= 1;
-        }
-    }
-
     void FixedUpdate()
     {
         Move();
@@ -62,7 +49,7 @@ public class Snake : MonoBehaviour
         var tailPath = tail.GetComponent<SnakePathManager>();        
         var tailMarker = tailPath.TrimAtCount(PartSize);
 
-        var partCount = BodyCount + 1;
+        var partCount = BodyCount.Value + 1;
         if (bodyParts.Count < partCount && tailMarker != null)
         {                        
             var part = CreatePartObject(0, tailMarker.position, tailMarker.rotation);
@@ -80,7 +67,7 @@ public class Snake : MonoBehaviour
 
     void Move()
     {
-        var control = GetComponent<SnakeControl>();
+        var control = GetComponent<ISnakeControl>();
         if( control != null)
             control.Move();
 
@@ -107,7 +94,7 @@ public class Snake : MonoBehaviour
     {
         var consumable = other.gameObject.GetComponent<IPickUpHandle>();
         if(consumable != null) {
-            BodyCount += 1;
+            BodyCount.Value += 1;
             consumable.OnConsume();
         }
     }
@@ -117,6 +104,6 @@ public class Snake : MonoBehaviour
         if(!ShowDebug)
             return;
 
-        DebugHUD.AddLine( $"Snake length: {bodyParts.Count-1}/{BodyCount}");        
+        DebugHUD.AddLine( $"Snake length: {bodyParts.Count-1}/{BodyCount.Value}");        
     }
 }

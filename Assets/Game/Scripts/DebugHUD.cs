@@ -13,7 +13,7 @@ public class DebugHUD
     GUIStyle labelStyle = new GUIStyle()
     {
         fontSize = 24,
-        normal = new GUIStyleState() { textColor = Color.white }
+        normal = new GUIStyleState() { textColor = Color.blue }
     };
 
     public static void StartFrame(bool enabled) {
