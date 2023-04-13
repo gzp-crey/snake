@@ -15,7 +15,8 @@ public class ManualSnakeControl : NetworkBehaviour, ISnakeControl
     {
         characterController = GetComponent<CharacterController>();
 
-        if(IsLocalPlayer) {
+        if (IsLocalPlayer)
+        {
             Joystick = NamedGameObjects.DirectionJoystick;
             var follow = NamedGameObjects.CameraFollow;
             if (follow != null)
@@ -48,7 +49,7 @@ public class ManualSnakeControl : NetworkBehaviour, ISnakeControl
             var rotation = Quaternion.LookRotation(target);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, TurnSpeed * Time.deltaTime);
             return;
-        }        
+        }
     }
 
     public void Move()
@@ -59,9 +60,10 @@ public class ManualSnakeControl : NetworkBehaviour, ISnakeControl
         characterController.SimpleMove(transform.right * Speed * Time.deltaTime);
     }
 
-    void OnGUI() {
-        DebugHUD.AddLine( $"IsLocal {NetworkObjectId}: {IsLocalPlayer}");        
-        DebugHUD.AddLine( $"Rotating {NetworkObjectId}: {isRot}");        
+    void OnGUI()
+    {
+        DebugHUD.AddLine($"IsLocal {NetworkObjectId}: {IsLocalPlayer}");
+        DebugHUD.AddLine($"Rotating {NetworkObjectId}: {isRot}");
 
     }
 }

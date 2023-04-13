@@ -1,73 +1,55 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Assertions;
 
-public class ConsumableSpawner : MonoBehaviour
+[DisallowMultipleComponent]
+public class ConsumableSpawner : NetworkBehaviour
 {
-    [SerializeField] Vector3 spawnAreaSize = Vector3.one * 3f;
-    [SerializeField] Consumable template;
+    [SerializeField] private Vector2 spawnAreaSize = Vector2.one * 3f;
+    public Vector2 SpawnAreaSize { get => spawnAreaSize; }
+    [SerializeField] private int MaxCount;
+    [SerializeField] private bool AutoSpawn;
+    [SerializeField] private Consumable template;
+    [SerializeField] bool ShowDebug;
 
-    [Range(0, 30)]
-    [SerializeField] int MaxCount;
-    [SerializeField] bool ShowDebug = true;
-
-    List<GameObject> liveConsumables = new List<GameObject>();
-
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        for (var i = 0; i < MaxCount; ++i)
+        base.OnNetworkSpawn();
+
+        if(!IsServer) return;       
+
+        for (int i = 0; i < MaxCount; i++)
         {
-            var consumable = Instantiate(template, transform);
-            consumable.spawner = this;
-            consumable.transform.rotation = Quaternion.identity;
-            if (MoveToRandomLocation(consumable))
+            //var consumable = Instantiate(template, Vector3.zero, Quaternion.identity);
+            var consumable = Instantiate(template, Vector3.zero, Quaternion.identity, transform);
+            consumable.gameObject.GetComponent<NetworkObject>().Spawn();
+            consumable.gameObject.transform.parent = transform;
+        }
+    }
+
+
+    public void Update()
+    {
+        if (!IsServer) return;
+
+        // reactivate all the spawn point to pick
+        foreach (var consumable in gameObject.GetComponentsInChildren<Consumable>(true))
+        {
+            if (consumable.isConsumed)
             {
-                liveConsumables.Add(consumable.gameObject);
+                if (consumable.MoveToRandomLocation(SpawnAreaSize))
+                {
+                    consumable.SetConsumed(false);
+                }
             }
         }
     }
+
 
     void OnDrawGizmos()
     {
-        Gizmos.DrawWireCube(transform.position, spawnAreaSize);
+        Gizmos.DrawWireCube(transform.position, new Vector3(SpawnAreaSize.x, 1, SpawnAreaSize.y));
         Gizmos.color = Color.yellow;
-    }
-
-    /// Create a new random position in the spawn area relative to this.
-    Vector3 GetRandomPosition()
-    {
-        var min = spawnAreaSize * -0.5f;
-        var max = spawnAreaSize * 0.5f;
-        return new Vector3(UnityEngine.Random.Range(min.x, max.x), max.y, UnityEngine.Random.Range(min.z, max.z));
-    }
-
-    bool MoveToRandomLocation(Consumable consumable, int retryCount = 3)
-    {
-        for (; ; )
-        {
-            consumable.transform.localPosition = GetRandomPosition();
-            var dist = spawnAreaSize.y * 2;
-            RaycastHit hit;
-            if (Physics.Raycast(consumable.transform.position, Vector3.down, out hit, spawnAreaSize.y * 2))
-            {
-                consumable.transform.position = hit.point;
-                return true;
-            }
-            retryCount -= 1;
-            if (retryCount < 0)
-            {
-                return false;
-            }
-        }
-    }
-
-    public void Consumed(Consumable consumable)
-    {
-        Assert.IsTrue(liveConsumables.Contains(consumable.gameObject));
-        if (!MoveToRandomLocation(consumable))
-        {
-            liveConsumables.Remove(consumable.gameObject);
-        }
     }
 
     void OnGUI()
@@ -75,7 +57,15 @@ public class ConsumableSpawner : MonoBehaviour
         if (!ShowDebug)
             return;
 
-        DebugHUD.AddLine($"Consumables: {MaxCount}/{liveConsumables.Count}");
+        int active = 0;
+        int inactive = 0;
+        int consumed = 0;
+        foreach (var consumable in gameObject.GetComponentsInChildren<Consumable>(true)) {
+            if(consumable.isActiveAndEnabled) active += 1;
+            if(!consumable.isActiveAndEnabled) inactive += 1;
+            if(!consumable.isConsumed) consumed += 1;
+        }
+        DebugHUD.AddLine($"Consumables: max:{MaxCount} a:{active} i:{inactive} c:{consumed}");
     }
 }
 
