@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -92,8 +91,11 @@ public class Snake : NetworkBehaviour
     //Upon collision with another GameObject, this GameObject will reverse direction
     void OnTriggerEnter(Collider other)
     {
+        if(IsLocalPlayer) return;
+        
         var consumable = other.gameObject.GetComponent<IPickUpHandle>();
         if(consumable != null) {
+            
             BodyCount.Value += 1;
             consumable.OnConsume();
         }

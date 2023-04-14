@@ -16,7 +16,7 @@ public class ConsumableSpawner : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        if(!IsServer) return;       
+        if(!IsServer) return;
 
         for (int i = 0; i < MaxCount; i++)
         {

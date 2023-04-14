@@ -15,7 +15,7 @@ public class Consumable : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        gameObject.SetActive(!consumedState.Value);
+        //gameObject.SetActive(!consumedState.Value);
     }
 
     /// Create a new random position in the spawn area relative to this.
@@ -49,11 +49,11 @@ public class Consumable : NetworkBehaviour
     public void SetConsumed(bool consumed)
     {
         consumedState.Value = consumed;
-        gameObject.SetActive(!consumed);
+        //gameObject.SetActive(!consumed);
     }
 
     public void Consume()
-    {
+    {        
         //todo: add extra effects
         SetConsumed(true);
     }

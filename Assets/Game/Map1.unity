@@ -1469,6 +1469,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Consumable-diamond
       objectReference: {fileID: 0}
+    - target: {fileID: 3267372272733075577, guid: b26e8e956c7f3774184bd8da94b2fb10, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8749507897109897681, guid: b26e8e956c7f3774184bd8da94b2fb10, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3503971023
@@ -1485,6 +1489,10 @@ PrefabInstance:
     - target: {fileID: 1436038022893329985, guid: 4f9546227f5495b46a010550c3b978ad, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3824681487
+      objectReference: {fileID: 0}
+    - target: {fileID: 3467966279950257676, guid: 4f9546227f5495b46a010550c3b978ad, type: 3}
+      propertyPath: ShowDebug
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5177347570074126311, guid: 4f9546227f5495b46a010550c3b978ad, type: 3}
       propertyPath: m_RootOrder

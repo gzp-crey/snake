@@ -9,7 +9,7 @@ public class ManualSnakeControl : NetworkBehaviour, ISnakeControl
 
     private CharacterController characterController;
     private FloatingJoystick Joystick;
-    private bool isRot = false;
+    private NetworkVariable<Vector2> targetDirection = new NetworkVariable<Vector2>(Vector2.right, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     void Start()
     {
@@ -26,44 +26,44 @@ public class ManualSnakeControl : NetworkBehaviour, ISnakeControl
 
     void Rotate()
     {
-        isRot = false;
         // rotate by input controller
         if (Input.GetAxis("Horizontal") != 0)
         {
             var dx = Input.GetAxis("Horizontal");
             if (dx > 1) dx = 1;
             else if (dx < -1) dx = -1;
-            isRot = true;
-            var rotation = dx * TurnSpeed;
-            transform.Rotate(0, rotation * Time.deltaTime, 0);
+            dx = dx * TurnSpeed * Time.deltaTime;
+            if (dx != 0)
+                targetDirection.Value = Quaternion.Euler(0, 0, -dx) * targetDirection.Value;
             return;
         }
 
         // rotate by virtual touch
         if (Joystick != null)
         {
-            Vector3 target = new Vector3(-Joystick.MovementAmount.y, 0.0f, Joystick.MovementAmount.x);
-            if (target.magnitude == 0)
-                return;
-            isRot = true;
-            var rotation = Quaternion.LookRotation(target);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, TurnSpeed * Time.deltaTime);
+            var target = Joystick.MovementAmount;
+            if (target.magnitude > 0)
+                targetDirection.Value = target;
             return;
         }
     }
 
     public void Move()
     {
-        if (!IsLocalPlayer) return;
+        if (IsLocalPlayer)
+        {
+            // local player only sets the target direction, but let the server decide the movement.
+            Rotate();
+        }
 
-        Rotate();
+        var direction = targetDirection.Value;
+        var lookAtDirection = Quaternion.LookRotation(new Vector3(-direction.y, 0.0f, direction.x));
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, lookAtDirection, TurnSpeed * Time.deltaTime);
         characterController.SimpleMove(transform.right * Speed * Time.deltaTime);
     }
 
     void OnGUI()
     {
-        DebugHUD.AddLine($"IsLocal {NetworkObjectId}: {IsLocalPlayer}");
-        DebugHUD.AddLine($"Rotating {NetworkObjectId}: {isRot}");
-
+        DebugHUD.AddLine($"Control {NetworkObjectId}, l: {IsLocalPlayer} r: {targetDirection.Value}");
     }
 }
