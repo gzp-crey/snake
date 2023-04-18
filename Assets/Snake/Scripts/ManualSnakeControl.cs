@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class ManualSnakeControl : NetworkBehaviour, ISnakeControl
+public class ManualSnakeControl : NetworkBehaviour
 {
     [SerializeField] float Speed = 100;
     [SerializeField] float TurnSpeed = 180;
@@ -48,9 +48,9 @@ public class ManualSnakeControl : NetworkBehaviour, ISnakeControl
         }
     }
 
-    public void Move()
+    public void Update()
     {
-        if (IsLocalPlayer)
+        if (IsOwner)
         {
             // local player only sets the target direction, but let the server decide the movement.
             Rotate();

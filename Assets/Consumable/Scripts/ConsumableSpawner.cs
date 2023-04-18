@@ -22,8 +22,9 @@ public class ConsumableSpawner : NetworkBehaviour
         {
             //var consumable = Instantiate(template, Vector3.zero, Quaternion.identity);
             var consumable = Instantiate(template, Vector3.zero, Quaternion.identity, transform);
-            consumable.gameObject.GetComponent<NetworkObject>().Spawn();
-            consumable.gameObject.transform.parent = transform;
+            var networkObject = consumable.gameObject.GetComponent<NetworkObject>();
+            networkObject.Spawn();
+            networkObject.TrySetParent(transform);
         }
     }
 

@@ -21,16 +21,18 @@ public class SnakePathManager : MonoBehaviour
     }
 
     List<Marker> markers = new List<Marker>();
+    public int Segment = 0;
+    public float Length = 1;
 
     void FixedUpdate()
     {
-        Add();        
+        Add();
     }
 
-    // Add marker to the current position of the head
+    // Add to the marker the current position of the part
     void Add()
     {
-        GameObject debug = null;        
+        GameObject debug = null;
         var marker = new Marker(transform.position, transform.rotation, debug);
 
         markers.Add(marker);
@@ -59,18 +61,18 @@ public class SnakePathManager : MonoBehaviour
 
         // find clipping position from the start, note the tail of the path is at 0
         float len = 0;
-        int i = markers.Count-1;
+        int i = markers.Count - 1;
         while (i > 0 && len < maxLength)
         {
             var d = (markers[i - 1].position - markers[i].position).magnitude;
             len += d;
             i -= 1;
         }
-        
+
         if (i > 0)
         {
             // remove unwanted section
-            var marker = markers[i-1];
+            var marker = markers[i - 1];
             markers.RemoveRange(0, i);
             return marker;
         }
@@ -88,13 +90,41 @@ public class SnakePathManager : MonoBehaviour
         if (countToRemove > 0)
         {
             // remove unwanted section
-            var marker = markers[countToRemove-1];
+            var marker = markers[countToRemove - 1];
             markers.RemoveRange(0, countToRemove);
             return marker;
         }
         else
         {
             return null;
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        Marker prev = null;
+        switch (Segment % 4)
+        {
+            case 0: Gizmos.color = Color.yellow; break;
+            case 1: Gizmos.color = Color.red; break;
+            case 2: Gizmos.color = Color.green; break;
+            default: Gizmos.color = Color.blue; break;
+        };
+
+        foreach (var marker in markers)
+        {
+            if (prev != null)
+            {
+                Gizmos.DrawSphere(prev.position, 0.1f);
+                Gizmos.DrawLine(prev.position, marker.position);
+            }
+            prev = marker;
+        }
+
+        if (prev != null)
+        {
+            Gizmos.DrawSphere(prev.position, 0.1f);
+            Gizmos.DrawLine(prev.position, transform.position);
         }
     }
 }
