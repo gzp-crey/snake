@@ -84,8 +84,8 @@ public class Snake : NetworkBehaviour, ISnakePart
         Assert.IsTrue(bodyParts.Count > 0 && bodyParts[0].gameObject == gameObject);
 
         var tail = bodyParts[bodyParts.Count - 1];
-        var tailMarker = tail.path.TrimAtLength(tail.length);
-        //var tailMarker = tail.path.TrimAtCount(8);
+        //var tailMarker = tail.path.TrimAtLength(tail.length);
+        var tailMarker = tail.path.TrimAtCount(8);
 
         var partCount = BodyCount.Value + 1;
         if (bodyParts.Count < partCount && tailMarker != null)
